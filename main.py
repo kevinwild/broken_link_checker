@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 import config
 import time
 
-protocols = ['https://']
+protocols = ['http://']
 logger = logger.Logger()
 seeds = []
 domain = ''

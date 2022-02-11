@@ -1,7 +1,7 @@
 SRC_FILE = 'src/url_list_example.txt'
-REQUEST_THROTTLE = 1
-DOMAIN_SEED_LIMIT = 5
-REQUEST_TIMEOUT = 7
+REQUEST_THROTTLE = .50
+DOMAIN_SEED_LIMIT = 150
+REQUEST_TIMEOUT = 10
 CRAWL = True
 HEADERS = {
     'Access-Control-Allow-Origin': '*',
