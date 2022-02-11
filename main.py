@@ -117,9 +117,12 @@ def check_domain(url, domain):
 
 def get_header_data(headers):
     rtn = {}
-    rtn['from_cache'] = headers['x-webmgr-cache']
-    rtn['brand'] = headers['x-webmgr-brand']
-    rtn['theme'] = headers['x-webmgr-theme']
+    for header in headers:
+        if header in config.RSP_HEADERS:
+            rtn[header] = headers[header]
+
+    print(rtn)
+    exit()
     return rtn
 
 
