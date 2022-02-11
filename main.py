@@ -30,13 +30,16 @@ def run():
             try:
                 rsp = requests.get(req_url, headers=config.HEADERS)
                 request_time = rsp.elapsed.total_seconds()
+                rsp_headers = get_header_data(rsp.headers)
                 msg = get_msg(rsp)
-                logger.log({'domain': domain,
-                            'full_url': req_url,
-                            'request_time': request_time,
-                            'status': rsp.status_code,
-                            'msg': msg
-                            })
+                log_data = {'domain': domain,
+                 'full_url': req_url,
+                 'request_time': request_time,
+                 'status': rsp.status_code,
+                 'msg': msg
+                 }
+                log_data.update(rsp_headers)
+                logger.log(log_data)
             except Exception as e:
                 print(f'>>> Error with base request: {req_url} - {e}')
                 logger.error({'domain': req_url, 'status': 'failed'})
@@ -66,13 +69,16 @@ def crawl(req_url, seeds):
         tmp_url = f"{req_url}{seed}"
         rsp = requests.get(tmp_url, headers=config.HEADERS, timeout=config.REQUEST_TIMEOUT)
         msg = get_msg(rsp)
-        logger.log({
+        rsp_headers = get_header_data(rsp.headers)
+        log_data = {
             'domain': domain,
             'full_url': tmp_url,
             'status': rsp.status_code,
             'request_time': rsp.elapsed.total_seconds(),
             'msg': msg
-        })
+        }
+        log_data.update(rsp_headers)
+        logger.log(log_data)
         print('----------')
         time.sleep(config.REQUEST_THROTTLE)
         print('----------')
@@ -108,6 +114,16 @@ def check_domain(url, domain):
     if url in domains:
         return True
     return False
+
+def get_header_data(headers):
+    rtn = {}
+    rtn['from_cache'] = headers['x-webmgr-cache']
+    rtn['brand'] = headers['x-webmgr-brand']
+    rtn['theme'] = headers['x-webmgr-theme']
+    return rtn
+
+
+
 
 if __name__ == '__main__':
     run()
