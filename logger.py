@@ -45,7 +45,7 @@ class Logger:
         domain = payload.get('domain')
         full_url = payload.get('full_url')
         request_time = payload.get('request_time')
-        from_cache = payload.get('from_cache')
+        cache = payload.get('cache')
         brand = payload.get('brand')
         theme = payload.get('theme')
 
@@ -53,9 +53,9 @@ class Logger:
         msg = payload.get('msg')
         c = self.conn.cursor()
         c.execute(
-            'INSERT INTO requests (domain,batch,full_url,status,request_time,from_cache,brand,theme, msg,date_rec) '
+            'INSERT INTO requests (domain,batch,full_url,status,request_time,cache,brand,theme, msg,date_rec) '
             'VALUES (?,?,?,?,?,?,?,?,?,?)',
-            (domain, self.batch, full_url, status, request_time, from_cache, brand, theme, msg, datetime.now()))
+            (domain, self.batch, full_url, status, request_time, cache, brand, theme, msg, datetime.now()))
         self.conn.commit()
         return c.lastrowid
 

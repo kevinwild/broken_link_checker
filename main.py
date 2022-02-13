@@ -133,10 +133,8 @@ def get_header_data(headers):
     rtn = {}
     for header in headers:
         if header in config.RSP_HEADERS:
-            rtn[header] = headers[header]
 
-    print(rtn)
-    exit()
+            rtn[header.split('-')[2]] = headers[header]
     return rtn
 
 
