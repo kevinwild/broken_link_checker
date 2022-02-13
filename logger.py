@@ -45,10 +45,18 @@ class Logger:
         domain = payload.get('domain')
         full_url = payload.get('full_url')
         request_time = payload.get('request_time')
-        cache = payload.get('cache')
-        brand = payload.get('brand')
-        theme = payload.get('theme')
-
+        if payload.get('cache'):
+            cache = payload.get('cache')
+        else:
+            cache = ''
+        if payload.get('brand'):
+            brand = payload.get('brand')
+        else:
+            brand = ''
+        if payload.get('theme'):
+            theme = payload.get('theme')
+        else:
+            theme = ''
         status = payload.get('status')
         msg = payload.get('msg')
         c = self.conn.cursor()

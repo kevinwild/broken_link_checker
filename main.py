@@ -131,6 +131,7 @@ def check_domain(url, domain):
 
 def get_header_data(headers):
     rtn = {}
+
     for header in headers:
         if header in config.RSP_HEADERS:
 
