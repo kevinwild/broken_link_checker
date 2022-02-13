@@ -6,18 +6,24 @@ from urllib.parse import urlparse
 import config
 import time
 
-protocols = ['https://']
+protocols = ['http://']
 logger = logger.Logger()
 seeds = []
 domain = ''
+site_count = 0
+site_total = 0
 
 def run():
     # .. Get domains from file system /src
     domain_list = _get_url_list()
+    global site_total
+    site_total = len(domain_list)
     global seeds
     global domain
     requires_www = False  # .. turned on when request fails with no www.. tries again adding www
     for domain in domain_list:
+        global  site_count
+        site_count+=1
         seeds = [domain]
         for protocol in protocols:
             if requires_www:
@@ -26,7 +32,7 @@ def run():
             else:
                 req_url = f"{protocol}{domain}"
 
-            print(f"processing: {req_url}")
+            print(f"({site_count}) processing: {req_url}")
             try:
                 rsp = requests.get(req_url, headers=config.HEADERS)
                 request_time = rsp.elapsed.total_seconds()
@@ -67,7 +73,15 @@ def crawl(req_url, seeds):
         seed_count += 1
         print(f">> processing seed ({seed_count} of {total_seeds})")
         tmp_url = f"{req_url}{seed}"
-        rsp = requests.get(tmp_url, headers=config.HEADERS, timeout=config.REQUEST_TIMEOUT)
+        try:
+            rsp = requests.get(tmp_url, headers=config.HEADERS, timeout=config.REQUEST_TIMEOUT)
+        except Exception as e:
+            print('>> Error with request: ', tmp_url)
+            logger.error({'domain': tmp_url, 'status': 'failed'})
+        if not rsp.ok:
+            logger.error({'domain': domain, 'status': rsp.status_code})
+            continue
+
         msg = get_msg(rsp)
         rsp_headers = get_header_data(rsp.headers)
         log_data = {
@@ -79,9 +93,9 @@ def crawl(req_url, seeds):
         }
         log_data.update(rsp_headers)
         logger.log(log_data)
-        print('----------')
+        print(f"----site: {site_count} of {site_total}-----")
         time.sleep(config.REQUEST_THROTTLE)
-        print('----------')
+        print('--------------------------------------------------')
 
 
 # .. get links from given page
