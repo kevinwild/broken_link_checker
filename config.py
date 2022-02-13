@@ -14,5 +14,4 @@ RSP_HEADERS = [
     'x-webmgr-cache',
     'x-webmgr-brand',
     'x-webmgr-theme'
-
 ]
